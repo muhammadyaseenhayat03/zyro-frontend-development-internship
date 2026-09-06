@@ -11,7 +11,22 @@ zyro-frontend-development-internship/
 │   ├── index.html
 │   ├── style.css
 │   ├── script.js
-│   └── evidence/        # screenshots for submission
+│   └── evidence/                 # screenshots for submission
+├── week-02/
+│   └── zyroo-local-delivery/     # React + Vite frontend MVP
+│       ├── src/
+│       │   ├── components/       # Navbar, Footer, StatusBadge, DeliveryTimeline
+│       │   ├── data/              # mock orders
+│       │   ├── pages/             # Home, Dashboard, Orders, OrderDetails, Track
+│       │   ├── App.jsx
+│       │   ├── main.jsx
+│       │   └── styles.css
+│       ├── public/
+│       ├── screenshots/          # submission screenshots
+│       ├── index.html
+│       ├── package.json
+│       ├── vite.config.js
+│       └── README.md
 ├── README.md
 └── .gitignore
 ```
@@ -35,6 +50,9 @@ git remote add origin <your-repo-url>
 git push -u origin main
 ```
 
-## Week 2
+## Week 2 — Local Delivery & Logistics Frontend MVP
 
-First real-world frontend development task begins.
+- Project: `week-02/zyroo-local-delivery/` — React (Vite) + React Router
+- Pages: Home, Dashboard, Orders, Order Details, Customer Tracking
+- Mock data only, no backend; responsive down to mobile
+- See `week-02/zyroo-local-delivery/README.md` for setup and page details
