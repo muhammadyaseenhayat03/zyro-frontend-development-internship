@@ -1,14 +1,12 @@
-// Small consistent icon set (stroke-based, 1.8px) reused across the app so every
-// screen draws from the same visual vocabulary instead of ad-hoc inline SVGs.
 const ICONS = {
   package: (
     <path d="M21 8.5v7l-9 4.5-9-4.5v-7L12 4l9 4.5Z M3 8.5 12 13l9-4.5 M12 13v8.5" />
   ),
   clock: <path d="M12 7v5l3.5 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />,
-  inbox: <path d="M4 12h4l2 3h4l2-3h4M5 12 6.5 5h11L19 12v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6Z" />,
-  route: (
-    <path d="M4 18 L10 8 L15 14 L20 6" />
+  inbox: (
+    <path d="M4 12h4l2 3h4l2-3h4M5 12 6.5 5h11L19 12v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6Z" />
   ),
+  route: <path d="M4 18 L10 8 L15 14 L20 6" />,
   check: <path d="M5 13l4 4L19 7" />,
   users: (
     <path d="M17 21v-1.5a3.5 3.5 0 0 0-3.5-3.5h-3A3.5 3.5 0 0 0 7 19.5V21M12 12a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM21 21v-1.5a3 3 0 0 0-2.2-2.9M17 5.1a3 3 0 0 1 0 5.8" />
@@ -18,7 +16,9 @@ const ICONS = {
   truck: (
     <path d="M3 7h11v8H3zM14 10h4l3 3v2h-7v-5ZM6.5 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM17.5 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
   ),
-  alert: <path d="M12 9v4M12 17h.01M10.3 3.9 2.7 17.5A1.6 1.6 0 0 0 4.1 20h15.8a1.6 1.6 0 0 0 1.4-2.5L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z" />,
+  alert: (
+    <path d="M12 9v4M12 17h.01M10.3 3.9 2.7 17.5A1.6 1.6 0 0 0 4.1 20h15.8a1.6 1.6 0 0 0 1.4-2.5L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z" />
+  ),
   "arrow-left": <path d="M19 12H5M12 5l-7 7 7 7" />,
 };
 

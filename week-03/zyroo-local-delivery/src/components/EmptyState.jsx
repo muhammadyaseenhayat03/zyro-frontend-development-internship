@@ -1,4 +1,3 @@
-// Consistent empty state used across orders lists, rider queues, and customer views.
 export default function EmptyState({ icon, title, body, action }) {
   return (
     <div className="empty-state">

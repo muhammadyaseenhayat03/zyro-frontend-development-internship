@@ -8,11 +8,6 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Loader from "./components/Loader";
 
-// Home, Track, and NotFound are small and needed right away (the first thing
-// most visitors land on, or the fallback for any unmatched URL), so they stay
-// in the main bundle. Everything role-specific — auth screens plus every
-// Business/Rider/Customer page — is only needed after a real navigation, so
-// it's code-split with React.lazy and only downloaded when visited.
 import Home from "./pages/Home";
 import Track from "./pages/Track";
 import NotFound from "./pages/NotFound";
@@ -30,14 +25,6 @@ const CustomerOrders = lazy(() => import("./pages/customer/CustomerOrders"));
 
 const BOOT_MS = 350;
 
-// AuthProvider/OrdersProvider read localStorage synchronously, so there's no
-// real async gap for session/role/order data today — but gating the whole
-// app behind one boot loader still matters: it's the single place that
-// represents "checking who's logged in and loading their data" for every
-// role, it's what stops a protected route from ever having a chance to
-// render before the session is known, and it keeps that logic from being
-// duplicated (or missed) on individual pages later if a real API replaces
-// localStorage.
 function useAppBoot() {
   const [booting, setBooting] = useState(true);
   useEffect(() => {
@@ -61,14 +48,17 @@ export default function App() {
               <div className="app-shell">
                 <Navbar />
                 <main className="app-main">
-                  <Suspense fallback={<Loader fullPage size="lg" label="Loading page…" />}>
+                  <Suspense
+                    fallback={
+                      <Loader fullPage size="lg" label="Loading page…" />
+                    }
+                  >
                     <Routes>
                       <Route path="/" element={<Home />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/login" element={<Login />} />
                       <Route path="/register" element={<Register />} />
 
-                      {/* Business */}
                       <Route
                         path="/business/dashboard"
                         element={
@@ -110,7 +100,6 @@ export default function App() {
                         }
                       />
 
-                      {/* Rider */}
                       <Route
                         path="/rider/dashboard"
                         element={
@@ -128,7 +117,6 @@ export default function App() {
                         }
                       />
 
-                      {/* Customer */}
                       <Route
                         path="/customer/orders"
                         element={

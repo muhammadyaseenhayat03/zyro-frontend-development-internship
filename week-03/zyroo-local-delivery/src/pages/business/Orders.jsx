@@ -4,25 +4,42 @@ import { useAuth } from "../../context/AuthContext";
 import { useOrders } from "../../context/OrdersContext";
 import { useToast } from "../../context/ToastContext";
 import { useAsyncAction } from "../../hooks/useAsyncAction";
-import { STATUS, STATUS_LABELS, canEditOrder, canCancelOrder } from "../../data/orders";
+import {
+  STATUS,
+  STATUS_LABELS,
+  canEditOrder,
+  canCancelOrder,
+} from "../../data/orders";
 import StatusBadge from "../../components/StatusBadge";
 import PriorityBadge from "../../components/PriorityBadge";
 import ConfirmDialog from "../../components/ConfirmDialog";
 import EmptyState from "../../components/EmptyState";
 import Icon from "../../components/Icon";
 
-const FILTERS = ["all", STATUS.PENDING, STATUS.ASSIGNED, STATUS.ACCEPTED, STATUS.PICKED_UP, STATUS.IN_TRANSIT, STATUS.DELIVERED, STATUS.CANCELLED];
+const FILTERS = [
+  "all",
+  STATUS.PENDING,
+  STATUS.ASSIGNED,
+  STATUS.ACCEPTED,
+  STATUS.PICKED_UP,
+  STATUS.IN_TRANSIT,
+  STATUS.DELIVERED,
+  STATUS.CANCELLED,
+];
 
-// One row component, memoized, instead of re-creating (and re-diffing) seven
-// inline onClick closures per row on every render — matters once the order
-// board has real volume on it. Edit and Cancel use their own permission
-// rules (see src/data/orders.js): editing locks at Picked up, but
-// cancellation stays available through Picked up and In transit.
-const OrderTableRow = memo(function OrderTableRow({ order, onOpen, onEdit, onCancelRequest }) {
+const OrderTableRow = memo(function OrderTableRow({
+  order,
+  onOpen,
+  onEdit,
+  onCancelRequest,
+}) {
   const editLocked = !canEditOrder(order.status);
   const cancelLocked = !canCancelOrder(order.status);
   return (
-    <tr className={order.priority === "Urgent" ? "row-urgent" : ""} onClick={() => onOpen(order.id)}>
+    <tr
+      className={order.priority === "Urgent" ? "row-urgent" : ""}
+      onClick={() => onOpen(order.id)}
+    >
       <td className="order-id">{order.id}</td>
       <td>{order.customerName}</td>
       <td className="route-cell">
@@ -37,14 +54,34 @@ const OrderTableRow = memo(function OrderTableRow({ order, onOpen, onEdit, onCan
       </td>
       <td className="route-cell">{order.createdAt.slice(0, 10)}</td>
       <td className="actions-cell" onClick={(e) => e.stopPropagation()}>
-        <button className="icon-btn" title="Edit" onClick={() => onEdit(order.id)} disabled={editLocked}>
+        <button
+          className="icon-btn"
+          title="Edit"
+          onClick={() => onEdit(order.id)}
+          disabled={editLocked}
+        >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-            <path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+            <path
+              d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3Z"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
-        <button className="icon-btn icon-btn-danger" title="Cancel order" onClick={() => onCancelRequest(order)} disabled={cancelLocked}>
+        <button
+          className="icon-btn icon-btn-danger"
+          title="Cancel order"
+          onClick={() => onCancelRequest(order)}
+          disabled={cancelLocked}
+        >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            <path
+              d="M6 6l12 12M18 6L6 18"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            />
           </svg>
         </button>
       </td>
@@ -64,11 +101,6 @@ export default function BusinessOrders() {
   const [filter, setFilter] = useState("all");
   const [cancelTarget, setCancelTarget] = useState(null);
 
-  // Land here after a successful rider assignment (see OrderDetails) with a
-  // one-shot toast in navigation state. The ref guards against showing the
-  // same message twice — e.g. React 18 Strict Mode intentionally re-fires
-  // effects once in development — by remembering exactly which message was
-  // already shown, then the state is cleared so it can't replay later either.
   const shownToastRef = useRef(null);
   useEffect(() => {
     const message = location.state?.toast;
@@ -77,14 +109,13 @@ export default function BusinessOrders() {
       showToast(message);
       navigate(location.pathname, { replace: true, state: {} });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.state]);
 
-  // Without this useMemo, `orders.filter(...)` returns a brand-new array on
-  // every render, which would silently defeat the `filtered` useMemo below —
-  // its dependency would never look "unchanged" even when nothing changed.
   const userId = user?.id;
-  const mine = useMemo(() => orders.filter((o) => o.businessId === userId), [orders, userId]);
+  const mine = useMemo(
+    () => orders.filter((o) => o.businessId === userId),
+    [orders, userId],
+  );
 
   const filtered = useMemo(() => {
     return mine.filter((o) => {
@@ -99,8 +130,14 @@ export default function BusinessOrders() {
     });
   }, [mine, query, filter]);
 
-  const openOrder = useCallback((id) => navigate(`/business/orders/${id}`), [navigate]);
-  const editOrder = useCallback((id) => navigate(`/business/orders/${id}/edit`), [navigate]);
+  const openOrder = useCallback(
+    (id) => navigate(`/business/orders/${id}`),
+    [navigate],
+  );
+  const editOrder = useCallback(
+    (id) => navigate(`/business/orders/${id}/edit`),
+    [navigate],
+  );
   const requestCancel = useCallback((order) => setCancelTarget(order), []);
 
   function handleCancelConfirm() {
@@ -123,7 +160,9 @@ export default function BusinessOrders() {
         <div>
           <p className="eyebrow">Fleet</p>
           <h1 className="page-title">Orders</h1>
-          <p className="page-sub">Every order you've created, and where it stands.</p>
+          <p className="page-sub">
+            Every order you've created, and where it stands.
+          </p>
         </div>
         <Link to="/business/orders/new" className="btn btn-amber">
           <Icon name="package" size={15} />
@@ -133,7 +172,11 @@ export default function BusinessOrders() {
 
       <div className="filter-row">
         {FILTERS.map((f) => (
-          <button key={f} className={"filter-chip" + (filter === f ? " active" : "")} onClick={() => setFilter(f)}>
+          <button
+            key={f}
+            className={"filter-chip" + (filter === f ? " active" : "")}
+            onClick={() => setFilter(f)}
+          >
             {f === "all" ? "All" : STATUS_LABELS[f]}
           </button>
         ))}
@@ -146,18 +189,34 @@ export default function BusinessOrders() {
           </h2>
           <div className="search-field">
             <Icon name="search" size={14} className="search-field-icon" />
-            <input className="search-input" placeholder="Search by order, customer, or rider" value={query} onChange={(e) => setQuery(e.target.value)} />
+            <input
+              className="search-input"
+              placeholder="Search by order, customer, or rider"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
           </div>
         </div>
 
         {filtered.length === 0 ? (
           <EmptyState
             icon={<Icon name="inbox" size={22} />}
-            title={mine.length === 0 ? "No orders yet" : "No orders match your filters"}
-            body={mine.length === 0 ? "Create your first order to start building your delivery board." : "Try a different status filter or search term."}
+            title={
+              mine.length === 0
+                ? "No orders yet"
+                : "No orders match your filters"
+            }
+            body={
+              mine.length === 0
+                ? "Create your first order to start building your delivery board."
+                : "Try a different status filter or search term."
+            }
             action={
               mine.length === 0 ? (
-                <Link to="/business/orders/new" className="btn btn-amber btn-sm">
+                <Link
+                  to="/business/orders/new"
+                  className="btn btn-amber btn-sm"
+                >
                   Create an order
                 </Link>
               ) : null
@@ -180,7 +239,13 @@ export default function BusinessOrders() {
               </thead>
               <tbody>
                 {filtered.map((o) => (
-                  <OrderTableRow key={o.id} order={o} onOpen={openOrder} onEdit={editOrder} onCancelRequest={requestCancel} />
+                  <OrderTableRow
+                    key={o.id}
+                    order={o}
+                    onOpen={openOrder}
+                    onEdit={editOrder}
+                    onCancelRequest={requestCancel}
+                  />
                 ))}
               </tbody>
             </table>
@@ -191,7 +256,11 @@ export default function BusinessOrders() {
       <ConfirmDialog
         open={Boolean(cancelTarget)}
         title="Cancel this order?"
-        body={cancelTarget ? `Are you sure you want to cancel order ${cancelTarget.id}? This can't be undone.` : ""}
+        body={
+          cancelTarget
+            ? `Are you sure you want to cancel order ${cancelTarget.id}? This can't be undone.`
+            : ""
+        }
         confirmLabel="Cancel order"
         pendingLabel="Cancelling…"
         loading={cancelling}

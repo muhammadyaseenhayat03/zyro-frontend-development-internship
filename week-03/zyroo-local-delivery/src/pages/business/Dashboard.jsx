@@ -13,12 +13,6 @@ export default function BusinessDashboard() {
   const { orders } = useOrders();
   const navigate = useNavigate();
 
-  // All derived from the same filter pass over `orders`, so it's computed
-  // once per relevant change rather than re-filtering on every render
-  // (including renders triggered by unrelated state, like a toast). Order
-  // data is already resolved by the time this page can render (see the app
-  // boot gate + ProtectedRoute in App.jsx), so there's nothing left to wait
-  // on here — no loading state needed.
   const userId = user?.id;
   const { stats, urgentOpen, recent } = useMemo(() => {
     const mineOrders = orders.filter((o) => o.businessId === userId);
@@ -27,12 +21,20 @@ export default function BusinessDashboard() {
         total: mineOrders.length,
         pending: mineOrders.filter((o) => o.status === STATUS.PENDING).length,
         inDelivery: mineOrders.filter((o) =>
-          [STATUS.ASSIGNED, STATUS.ACCEPTED, STATUS.PICKED_UP, STATUS.IN_TRANSIT].includes(o.status)
+          [
+            STATUS.ASSIGNED,
+            STATUS.ACCEPTED,
+            STATUS.PICKED_UP,
+            STATUS.IN_TRANSIT,
+          ].includes(o.status),
         ).length,
-        completed: mineOrders.filter((o) => o.status === STATUS.DELIVERED).length,
+        completed: mineOrders.filter((o) => o.status === STATUS.DELIVERED)
+          .length,
       },
       urgentOpen: mineOrders.filter(
-        (o) => o.priority === "Urgent" && ![STATUS.DELIVERED, STATUS.CANCELLED].includes(o.status)
+        (o) =>
+          o.priority === "Urgent" &&
+          ![STATUS.DELIVERED, STATUS.CANCELLED].includes(o.status),
       ).length,
       recent: mineOrders.slice(0, 6),
     };
@@ -44,7 +46,9 @@ export default function BusinessDashboard() {
         <div>
           <p className="eyebrow">Overview</p>
           <h1 className="page-title">Welcome back, {user?.name || ""}</h1>
-          <p className="page-sub">Here's how your deliveries are moving today.</p>
+          <p className="page-sub">
+            Here's how your deliveries are moving today.
+          </p>
         </div>
         <Link to="/business/orders/new" className="btn btn-amber">
           <Icon name="package" size={15} />
@@ -95,9 +99,14 @@ export default function BusinessDashboard() {
         <div className="alert-banner">
           <Icon name="bolt" size={16} />
           <span>
-            <strong>{urgentOpen}</strong> urgent order{urgentOpen === 1 ? "" : "s"} still open — worth a look before anything else.
+            <strong>{urgentOpen}</strong> urgent order
+            {urgentOpen === 1 ? "" : "s"} still open — worth a look before
+            anything else.
           </span>
-          <button className="btn btn-sm btn-dark" onClick={() => navigate("/business/orders")}>
+          <button
+            className="btn btn-sm btn-dark"
+            onClick={() => navigate("/business/orders")}
+          >
             Review
           </button>
         </div>
@@ -135,7 +144,11 @@ export default function BusinessDashboard() {
               </thead>
               <tbody>
                 {recent.map((o) => (
-                  <tr key={o.id} className={o.priority === "Urgent" ? "row-urgent" : ""} onClick={() => navigate(`/business/orders/${o.id}`)}>
+                  <tr
+                    key={o.id}
+                    className={o.priority === "Urgent" ? "row-urgent" : ""}
+                    onClick={() => navigate(`/business/orders/${o.id}`)}
+                  >
                     <td className="order-id">{o.id}</td>
                     <td>{o.customerName}</td>
                     <td>

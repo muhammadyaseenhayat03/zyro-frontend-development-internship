@@ -1,6 +1,3 @@
-// Shimmering placeholder blocks used while a page's data is "loading" —
-// this app has no real network latency, but the pattern still communicates
-// that the interface is doing something rather than snapping in instantly.
 export function Skeleton({ width, height = 14, radius = 6, style }) {
   return (
     <span

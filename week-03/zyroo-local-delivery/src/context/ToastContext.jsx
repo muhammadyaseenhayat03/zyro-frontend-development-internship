@@ -1,4 +1,11 @@
-import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Icon from "../components/Icon";
 
 const ToastContext = createContext(null);
@@ -21,10 +28,6 @@ export function ToastProvider({ children }) {
     }, 3600);
   }, []);
 
-  // `showToast` never changes identity, so this stays stable too — meaning a
-  // toast appearing/disappearing (which re-renders ToastProvider) does NOT
-  // force every consumer of useToast() elsewhere in the tree to re-render,
-  // since the value they actually read never changes identity.
   const value = useMemo(() => ({ showToast }), [showToast]);
 
   return (

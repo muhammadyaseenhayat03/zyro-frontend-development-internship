@@ -14,11 +14,15 @@ function isToday(dateStr) {
   return d.toDateString() === now.toDateString();
 }
 
-// Memoized so a row only re-renders when its own order or the (stable)
-// open-handler changes — not every time a sibling row's order updates.
 const OrderRow = memo(function OrderRow({ order, onOpen }) {
   return (
-    <div className={"delivery-row" + (order.priority === "Urgent" ? " delivery-row-urgent" : "")} onClick={() => onOpen(order.id)}>
+    <div
+      className={
+        "delivery-row" +
+        (order.priority === "Urgent" ? " delivery-row-urgent" : "")
+      }
+      onClick={() => onOpen(order.id)}
+    >
       <div className="delivery-row-main">
         <span className="order-id">{order.id}</span>
         <span className="route-cell">
@@ -39,32 +43,59 @@ export default function RiderDashboard() {
   const { orders } = useOrders();
   const navigate = useNavigate();
 
-  // `mine` needs its own useMemo: without it, `orders.filter(...)` returns a
-  // new array every render, which would make the `groups` useMemo below
-  // recompute on every render too (its dependency never looks "unchanged").
-  // Order data is already resolved by the time this page can render (see the
-  // app boot gate + ProtectedRoute in App.jsx), so there's no loading state
-  // needed here beyond that.
   const userId = user?.id;
-  const mine = useMemo(() => orders.filter((o) => o.riderId === userId), [orders, userId]);
+  const mine = useMemo(
+    () => orders.filter((o) => o.riderId === userId),
+    [orders, userId],
+  );
 
   const groups = useMemo(
     () => ({
-      today: mine.filter((o) => isToday(o.updatedAt) && o.status !== STATUS.DELIVERED),
+      today: mine.filter(
+        (o) => isToday(o.updatedAt) && o.status !== STATUS.DELIVERED,
+      ),
       pending: mine.filter((o) => o.status === STATUS.ASSIGNED),
-      active: mine.filter((o) => [STATUS.ACCEPTED, STATUS.PICKED_UP, STATUS.IN_TRANSIT].includes(o.status)),
+      active: mine.filter((o) =>
+        [STATUS.ACCEPTED, STATUS.PICKED_UP, STATUS.IN_TRANSIT].includes(
+          o.status,
+        ),
+      ),
       completed: mine.filter((o) => o.status === STATUS.DELIVERED),
     }),
-    [mine]
+    [mine],
   );
 
   const open = useCallback((id) => navigate(`/rider/orders/${id}`), [navigate]);
 
   const sections = [
-    { key: "today", title: "Today's deliveries", icon: "clock", items: groups.today, empty: "Nothing due today." },
-    { key: "pending", title: "Pending deliveries", icon: "inbox", items: groups.pending, empty: "No deliveries waiting on you." },
-    { key: "active", title: "Active deliveries", icon: "truck", items: groups.active, empty: "Nothing in progress right now." },
-    { key: "completed", title: "Completed deliveries", icon: "check", items: groups.completed, empty: "Nothing completed yet." },
+    {
+      key: "today",
+      title: "Today's deliveries",
+      icon: "clock",
+      items: groups.today,
+      empty: "Nothing due today.",
+    },
+    {
+      key: "pending",
+      title: "Pending deliveries",
+      icon: "inbox",
+      items: groups.pending,
+      empty: "No deliveries waiting on you.",
+    },
+    {
+      key: "active",
+      title: "Active deliveries",
+      icon: "truck",
+      items: groups.active,
+      empty: "Nothing in progress right now.",
+    },
+    {
+      key: "completed",
+      title: "Completed deliveries",
+      icon: "check",
+      items: groups.completed,
+      empty: "Nothing completed yet.",
+    },
   ];
 
   return (
@@ -72,7 +103,9 @@ export default function RiderDashboard() {
       <div className="page-header">
         <p className="eyebrow">Rider</p>
         <h1 className="page-title">Hi {user.name}, here's your route</h1>
-        <p className="page-sub">Deliveries assigned to you, grouped by where they stand.</p>
+        <p className="page-sub">
+          Deliveries assigned to you, grouped by where they stand.
+        </p>
       </div>
 
       <div className="stat-grid">
@@ -118,13 +151,20 @@ export default function RiderDashboard() {
         <div className="panel delivery-section" key={section.key}>
           <div className="panel-header">
             <h2>
-              <Icon name={section.icon} size={15} className="panel-header-icon" />
+              <Icon
+                name={section.icon}
+                size={15}
+                className="panel-header-icon"
+              />
               {section.title}
             </h2>
             <span className="section-count">{section.items.length}</span>
           </div>
           {section.items.length === 0 ? (
-            <EmptyState icon={<Icon name="inbox" size={20} />} title={section.empty} />
+            <EmptyState
+              icon={<Icon name="inbox" size={20} />}
+              title={section.empty}
+            />
           ) : (
             <div className="delivery-list">
               {section.items.map((o) => (

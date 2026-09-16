@@ -10,10 +10,42 @@ const FEATURES = [
     body: "Business accounts see pending, in-delivery, and completed orders at a glance.",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-        <rect x="3" y="3" width="8" height="8" rx="1.5" stroke="white" strokeWidth="2" />
-        <rect x="13" y="3" width="8" height="8" rx="1.5" stroke="white" strokeWidth="2" />
-        <rect x="3" y="13" width="8" height="8" rx="1.5" stroke="white" strokeWidth="2" />
-        <rect x="13" y="13" width="8" height="8" rx="1.5" stroke="white" strokeWidth="2" />
+        <rect
+          x="3"
+          y="3"
+          width="8"
+          height="8"
+          rx="1.5"
+          stroke="white"
+          strokeWidth="2"
+        />
+        <rect
+          x="13"
+          y="3"
+          width="8"
+          height="8"
+          rx="1.5"
+          stroke="white"
+          strokeWidth="2"
+        />
+        <rect
+          x="3"
+          y="13"
+          width="8"
+          height="8"
+          rx="1.5"
+          stroke="white"
+          strokeWidth="2"
+        />
+        <rect
+          x="13"
+          y="13"
+          width="8"
+          height="8"
+          rx="1.5"
+          stroke="white"
+          strokeWidth="2"
+        />
       </svg>
     ),
   },
@@ -22,7 +54,13 @@ const FEATURES = [
     body: "Accept, pick up, and deliver — every rider sees only what's assigned to them.",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-        <path d="M4 18 L10 8 L15 14 L20 6" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+        <path
+          d="M4 18 L10 8 L15 14 L20 6"
+          stroke="white"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
     ),
   },
@@ -32,7 +70,12 @@ const FEATURES = [
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
         <circle cx="11" cy="11" r="7" stroke="white" strokeWidth="2" />
-        <path d="M20 20l-3.5-3.5" stroke="white" strokeWidth="2" strokeLinecap="round" />
+        <path
+          d="M20 20l-3.5-3.5"
+          stroke="white"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
       </svg>
     ),
   },
@@ -44,12 +87,13 @@ const ROLE_HOME = {
   [ROLES.CUSTOMER]: "/customer/orders",
 };
 
-const ACTIVE_STATUSES = [STATUS.ASSIGNED, STATUS.ACCEPTED, STATUS.PICKED_UP, STATUS.IN_TRANSIT];
+const ACTIVE_STATUSES = [
+  STATUS.ASSIGNED,
+  STATUS.ACCEPTED,
+  STATUS.PICKED_UP,
+  STATUS.IN_TRANSIT,
+];
 
-// The "right now" panel is operational information, so what it shows must be
-// scoped to the signed-in account — a business sees its own board, a rider
-// sees their own route, a customer sees their own orders. Signed-out visitors
-// get plain marketing copy instead of anyone's operational numbers.
 function useHomeSummary(user, orders) {
   if (!user) {
     return {
@@ -62,7 +106,9 @@ function useHomeSummary(user, orders) {
   if (user.role === ROLES.BUSINESS) {
     const mine = orders.filter((o) => o.businessId === user.id);
     const pending = mine.filter((o) => o.status === STATUS.PENDING).length;
-    const inDelivery = mine.filter((o) => ACTIVE_STATUSES.includes(o.status)).length;
+    const inDelivery = mine.filter((o) =>
+      ACTIVE_STATUSES.includes(o.status),
+    ).length;
     return {
       eyebrow: "Your business, right now",
       body: `${mine.length} order${mine.length === 1 ? "" : "s"} on your board · ${pending} pending · ${inDelivery} out for delivery`,
@@ -72,7 +118,9 @@ function useHomeSummary(user, orders) {
 
   if (user.role === ROLES.RIDER) {
     const mine = orders.filter((o) => o.riderId === user.id);
-    const active = mine.filter((o) => [STATUS.ACCEPTED, STATUS.PICKED_UP, STATUS.IN_TRANSIT].includes(o.status)).length;
+    const active = mine.filter((o) =>
+      [STATUS.ACCEPTED, STATUS.PICKED_UP, STATUS.IN_TRANSIT].includes(o.status),
+    ).length;
     const pending = mine.filter((o) => o.status === STATUS.ASSIGNED).length;
     return {
       eyebrow: "Your route, right now",
@@ -81,10 +129,15 @@ function useHomeSummary(user, orders) {
     };
   }
 
-  // Customer
-  const mine = orders.filter((o) => o.customerId === user.id || o.customerName === user.name);
-  const current = mine.filter((o) => ![STATUS.DELIVERED, STATUS.CANCELLED].includes(o.status));
-  const mostRecent = [...mine].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))[0];
+  const mine = orders.filter(
+    (o) => o.customerId === user.id || o.customerName === user.name,
+  );
+  const current = mine.filter(
+    (o) => ![STATUS.DELIVERED, STATUS.CANCELLED].includes(o.status),
+  );
+  const mostRecent = [...mine].sort(
+    (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt),
+  )[0];
   const body = mostRecent
     ? `${current.length} active order${current.length === 1 ? "" : "s"} · most recent: #${mostRecent.id} — ${STATUS_LABELS[mostRecent.status]}`
     : "You don't have any orders yet — once a business places one for you, it'll show up here.";
@@ -108,7 +161,12 @@ export default function Home() {
   return (
     <>
       <section className="hero">
-        <svg className="hero-route" viewBox="0 0 1120 420" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          className="hero-route"
+          viewBox="0 0 1120 420"
+          preserveAspectRatio="xMidYMid slice"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
             d="M-40 360 C 180 320, 260 180, 460 190 S 760 340, 980 140 S 1180 60, 1300 20"
             stroke="#ffffff"
@@ -124,7 +182,10 @@ export default function Home() {
         <div className="hero-inner">
           <div>
             <h1>Local Delivery Platform</h1>
-            <p>From order creation to doorstep delivery — businesses, riders, and customers, all in one place.</p>
+            <p>
+              From order creation to doorstep delivery — businesses, riders, and
+              customers, all in one place.
+            </p>
             <div className="hero-actions">
               <Link to={primaryCta.to} className="btn btn-amber">
                 {primaryCta.label}

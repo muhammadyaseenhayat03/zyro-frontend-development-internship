@@ -4,7 +4,13 @@ import { useAuth } from "../context/AuthContext";
 import { useOrders } from "../context/OrdersContext";
 import { useToast } from "../context/ToastContext";
 import { useAsyncAction } from "../hooks/useAsyncAction";
-import { RIDERS, STATUS, canEditOrder, canAssignRider, canCancelOrder } from "../data/orders";
+import {
+  RIDERS,
+  STATUS,
+  canEditOrder,
+  canAssignRider,
+  canCancelOrder,
+} from "../data/orders";
 import StatusBadge from "../components/StatusBadge";
 import PriorityBadge from "../components/PriorityBadge";
 import DeliveryTimeline from "../components/DeliveryTimeline";
@@ -12,15 +18,18 @@ import ConfirmDialog from "../components/ConfirmDialog";
 import Spinner from "../components/Spinner";
 import Icon from "../components/Icon";
 
-// Shared order details view rendered at /business/orders/:id, /rider/orders/:id
-// and /customer/orders/:id. Available actions are decided by the current role.
-// Order data is already resolved by the time this page can render (see the
-// app boot gate + ProtectedRoute in App.jsx), so a not-found id shows the
-// error state immediately rather than behind an artificial loading delay.
 export default function OrderDetails({ backTo }) {
   const { id } = useParams();
   const { user } = useAuth();
-  const { getOrder, assignRider, cancelOrder, acceptDelivery, markPickedUp, startTransit, markDelivered } = useOrders();
+  const {
+    getOrder,
+    assignRider,
+    cancelOrder,
+    acceptDelivery,
+    markPickedUp,
+    startTransit,
+    markDelivered,
+  } = useOrders();
   const { showToast } = useToast();
   const navigate = useNavigate();
 
@@ -51,19 +60,10 @@ export default function OrderDetails({ backTo }) {
   const isAssignedRider = user.role === "rider" && order.riderId === user.id;
   const isCustomer = user.role === "customer";
 
-  // Centralized Business Account permission matrix (see src/data/orders.js) —
-  // read fresh on every render from the current `order`, so if the status
-  // changes elsewhere (e.g. the rider progresses the delivery) while this
-  // page is open, these immediately reflect the new, correct permissions
-  // rather than whatever was true when the page first loaded.
   const editAllowed = canEditOrder(order.status);
   const assignAllowed = canAssignRider(order.status);
   const cancelAllowed = canCancelOrder(order.status);
 
-  // Business flow: select a rider → Assign → the existing assignment logic runs
-  // (pending → assigned) → once it's done, land back on the Orders list so the
-  // updated row and a success toast are both visible together, instead of
-  // leaving the business stranded on a details page that looks unchanged.
   function handleAssign() {
     const rider = RIDERS.find((r) => r.id === riderChoice);
     if (!rider || !assignAllowed) return;
@@ -75,7 +75,9 @@ export default function OrderDetails({ backTo }) {
       }
       navigate("/business/orders", {
         replace: true,
-        state: { toast: `Order #${order.id} assigned to ${rider.name} successfully.` },
+        state: {
+          toast: `Order #${order.id} assigned to ${rider.name} successfully.`,
+        },
       });
     });
   }
@@ -137,7 +139,10 @@ export default function OrderDetails({ backTo }) {
           </p>
         </div>
         {isBusiness && editAllowed && (
-          <Link to={`/business/orders/${order.id}/edit`} className="btn btn-dark">
+          <Link
+            to={`/business/orders/${order.id}/edit`}
+            className="btn btn-dark"
+          >
             <Icon name="package" size={15} />
             Edit order
           </Link>
@@ -156,7 +161,9 @@ export default function OrderDetails({ backTo }) {
           </div>
           <div className="detail-row">
             <span className="detail-label">Rider</span>
-            <span className="detail-value">{order.riderName || "Not assigned"}</span>
+            <span className="detail-value">
+              {order.riderName || "Not assigned"}
+            </span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Package</span>
@@ -197,14 +204,20 @@ export default function OrderDetails({ backTo }) {
                   onChange={(e) => setRiderChoice(e.target.value)}
                   disabled={!assignAllowed || assigning}
                 >
-                  <option value="">{order.riderId ? "Reassign rider…" : "Assign a rider…"}</option>
+                  <option value="">
+                    {order.riderId ? "Reassign rider…" : "Assign a rider…"}
+                  </option>
                   {RIDERS.map((r) => (
                     <option key={r.id} value={r.id}>
                       {r.name}
                     </option>
                   ))}
                 </select>
-                <button className="btn btn-dark" onClick={handleAssign} disabled={!assignAllowed || !riderChoice || assigning}>
+                <button
+                  className="btn btn-dark"
+                  onClick={handleAssign}
+                  disabled={!assignAllowed || !riderChoice || assigning}
+                >
                   {assigning ? (
                     <>
                       <Spinner size={13} />
@@ -217,10 +230,16 @@ export default function OrderDetails({ backTo }) {
               </div>
               {!assignAllowed && (
                 <p className="field-hint">
-                  {order.riderId ? "Rider is locked once a delivery has been accepted." : "Rider assignment is closed for this order."}
+                  {order.riderId
+                    ? "Rider is locked once a delivery has been accepted."
+                    : "Rider assignment is closed for this order."}
                 </p>
               )}
-              <button className="btn btn-danger-outline" onClick={() => setShowCancel(true)} disabled={!cancelAllowed || assigning}>
+              <button
+                className="btn btn-danger-outline"
+                onClick={() => setShowCancel(true)}
+                disabled={!cancelAllowed || assigning}
+              >
                 Cancel order
               </button>
             </div>
@@ -229,26 +248,62 @@ export default function OrderDetails({ backTo }) {
           {isAssignedRider && (
             <div className="detail-actions">
               {order.status === STATUS.ASSIGNED && (
-                <button className="btn btn-amber" style={{ width: "100%" }} onClick={handleAccept} disabled={actingOnDelivery}>
-                  {actingOnDelivery ? <Spinner size={14} /> : <Icon name="check" size={15} />}
+                <button
+                  className="btn btn-amber"
+                  style={{ width: "100%" }}
+                  onClick={handleAccept}
+                  disabled={actingOnDelivery}
+                >
+                  {actingOnDelivery ? (
+                    <Spinner size={14} />
+                  ) : (
+                    <Icon name="check" size={15} />
+                  )}
                   {actingOnDelivery ? "Accepting…" : "Accept delivery"}
                 </button>
               )}
               {order.status === STATUS.ACCEPTED && (
-                <button className="btn btn-amber" style={{ width: "100%" }} onClick={handlePickedUp} disabled={actingOnDelivery}>
-                  {actingOnDelivery ? <Spinner size={14} /> : <Icon name="package" size={15} />}
+                <button
+                  className="btn btn-amber"
+                  style={{ width: "100%" }}
+                  onClick={handlePickedUp}
+                  disabled={actingOnDelivery}
+                >
+                  {actingOnDelivery ? (
+                    <Spinner size={14} />
+                  ) : (
+                    <Icon name="package" size={15} />
+                  )}
                   {actingOnDelivery ? "Updating…" : "Mark as picked up"}
                 </button>
               )}
               {order.status === STATUS.PICKED_UP && (
-                <button className="btn btn-amber" style={{ width: "100%" }} onClick={handleStartTransit} disabled={actingOnDelivery}>
-                  {actingOnDelivery ? <Spinner size={14} /> : <Icon name="truck" size={15} />}
+                <button
+                  className="btn btn-amber"
+                  style={{ width: "100%" }}
+                  onClick={handleStartTransit}
+                  disabled={actingOnDelivery}
+                >
+                  {actingOnDelivery ? (
+                    <Spinner size={14} />
+                  ) : (
+                    <Icon name="truck" size={15} />
+                  )}
                   {actingOnDelivery ? "Updating…" : "Start transit"}
                 </button>
               )}
               {order.status === STATUS.IN_TRANSIT && (
-                <button className="btn btn-amber" style={{ width: "100%" }} onClick={handleDelivered} disabled={actingOnDelivery}>
-                  {actingOnDelivery ? <Spinner size={14} /> : <Icon name="check" size={15} />}
+                <button
+                  className="btn btn-amber"
+                  style={{ width: "100%" }}
+                  onClick={handleDelivered}
+                  disabled={actingOnDelivery}
+                >
+                  {actingOnDelivery ? (
+                    <Spinner size={14} />
+                  ) : (
+                    <Icon name="check" size={15} />
+                  )}
                   {actingOnDelivery ? "Updating…" : "Mark as delivered"}
                 </button>
               )}

@@ -1,10 +1,6 @@
 import Icon from "./Icon";
 import Spinner from "./Spinner";
 
-// Lightweight confirmation modal — used for destructive actions like Cancel Order.
-// `loading` puts the confirm button into a disabled/spinner state and blocks
-// the backdrop/"Go back" dismissal, so the action can't be double-submitted
-// or interrupted mid-flight.
 export default function ConfirmDialog({
   open,
   title,
@@ -27,7 +23,11 @@ export default function ConfirmDialog({
         <h3 className="modal-title">{title}</h3>
         {body && <p className="modal-body">{body}</p>}
         <div className="modal-actions">
-          <button className="btn btn-subtle" onClick={onCancel} disabled={loading}>
+          <button
+            className="btn btn-subtle"
+            onClick={onCancel}
+            disabled={loading}
+          >
             Go back
           </button>
           <button
