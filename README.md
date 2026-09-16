@@ -27,6 +27,34 @@ zyro-frontend-development-internship/
 │       ├── package.json
 │       ├── vite.config.js
 │       └── README.md
+
+
+├── week-03/
+│   └── zyroo-local-delivery/     # React + Vite — order & delivery management
+│       ├── src/
+│       │   ├── components/       # Navbar, Footer, StatusBadge, PriorityBadge,
+│       │   │                     # DeliveryTimeline, ProtectedRoute, ConfirmDialog
+│       │   ├── context/          # AuthContext, OrdersContext, ToastContext
+│       │   ├── data/              # mock orders, mock users/roles
+│       │   ├── pages/
+│       │   │   ├── auth/          # Login, Register
+│       │   │   ├── business/      # Dashboard, Orders, OrderForm (create/edit)
+│       │   │   ├── rider/         # RiderDashboard
+│       │   │   ├── customer/      # CustomerOrders
+│       │   │   ├── Home.jsx
+│       │   │   ├── Track.jsx      # public order lookup
+│       │   │   ├── OrderDetails.jsx  # shared, role-aware actions
+│       │   │   └── NotFound.jsx
+│       │   ├── App.jsx
+│       │   ├── main.jsx
+│       │   └── styles.css
+│       ├── public/
+│       ├── screenshots/          # submission screenshots
+│       ├── index.html
+│       ├── package.json
+│       ├── vite.config.js
+│       └── README.md
+|
 ├── README.md
 └── .gitignore
 ```
@@ -56,3 +84,18 @@ git push -u origin main
 - Pages: Home, Dashboard, Orders, Order Details, Customer Tracking
 - Mock data only, no backend; responsive down to mobile
 - See `week-02/zyroo-local-delivery/README.md` for setup and page details
+
+## Week 3 — Order & Delivery Management
+
+- Project: `week-03/zyroo-local-delivery/` — carries the Week 2 app forward
+- Adds mock login/registration with three roles: Business, Rider, Customer
+  (Context API for auth, orders, and toast state; role-protected routes)
+- Business: create/edit/cancel orders, assign or reassign a rider, searchable
+  and filterable order list
+- Rider: dashboard grouped into Today / Pending / Active / Completed, accept
+  delivery, mark picked up, start transit, mark delivered
+- Customer: current/previous orders, order details with a live delivery
+  timeline; a public Track page still works without logging in
+- Mock data + demo accounts persisted to `localStorage`, still no backend
+- See `week-03/zyroo-local-delivery/README.md` for demo accounts, the full
+  delivery flow, and setup details
