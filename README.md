@@ -9,8 +9,8 @@ zyro-frontend-development-internship/
 ├── week-01/
 │   ├── avatar.jpg
 │   ├── index.html
-│   ├── style.css
 │   ├── script.js
+│   ├── style.css
 │   └── evidence/                 # screenshots for submission
 ├── week-02/
 │   └── zyroo-local-delivery/     # React + Vite frontend MVP
@@ -27,15 +27,15 @@ zyro-frontend-development-internship/
 │       ├── package.json
 │       ├── vite.config.js
 │       └── README.md
-
-
 ├── week-03/
 │   └── zyroo-local-delivery/     # React + Vite — order & delivery management
 │       ├── src/
 │       │   ├── components/       # Navbar, Footer, StatusBadge, PriorityBadge,
-│       │   │                     # DeliveryTimeline, ProtectedRoute, ConfirmDialog
+│       │   │                     # DeliveryTimeline, ProtectedRoute, ConfirmDialog,
+│       │   │                     # EmptyState, Icon, Loader, Skeleton, Spinner
 │       │   ├── context/          # AuthContext, OrdersContext, ToastContext
 │       │   ├── data/              # mock orders, mock users/roles
+│       │   ├── hooks/             # useAsyncAction, useLoadingDelay
 │       │   ├── pages/
 │       │   │   ├── auth/          # Login, Register
 │       │   │   ├── business/      # Dashboard, Orders, OrderForm (create/edit)
@@ -50,13 +50,39 @@ zyro-frontend-development-internship/
 │       │   └── styles.css
 │       ├── public/
 │       ├── screenshots/          # submission screenshots
+│       ├── .oxlintrc.json
 │       ├── index.html
 │       ├── package.json
+│       ├── package-lock.json
 │       ├── vite.config.js
 │       └── README.md
-|
-├── README.md
-└── .gitignore
+├── week-04/
+│   └── zyroo-local-delivery/     # React + Vite — delivery tracking & notifications
+│       ├── src/
+│       │   ├── components/       # ConfirmDialog, DeliveryMap, DeliveryTimeline,
+│       │   │                     # EmptyState, Footer, Icon, Loader, Navbar,
+│       │   │                     # NotificationBell, PriorityBadge, ProtectedRoute,
+│       │   │                     # RiderInfoCard, Skeleton, Spinner, StatusBadge
+│       │   ├── context/          # AuthContext, NotificationsContext,
+│       │   │                     # OrdersContext, ToastContext
+│       │   ├── data/              # notifications, orders, users
+│       │   ├── hooks/             # useAsyncAction, useLoadingDelay, useMyNotifications
+│       │   ├── pages/             # auth (Login, Register), business (Dashboard, OrderForm, Orders),
+│       │   │                     # customer (CustomerOrders), rider (RiderDashboard),
+│       │   │                     # Home, NotFound, OrderDetails, Track
+│       │   ├── App.jsx
+│       │   ├── main.jsx
+│       │   └── styles.css
+│       ├── public/
+│       ├── screenshots/          # submission screenshots
+│       ├── .oxlintrc.json
+│       ├── index.html
+│       ├── package.json
+│       ├── package-lock.json
+│       ├── vite.config.js
+│       └── README.md
+├── .gitignore
+└── README.md
 ```
 
 ## Week 1 — Onboarding & Environment Setup
@@ -99,3 +125,19 @@ git push -u origin main
 - Mock data + demo accounts persisted to `localStorage`, still no backend
 - See `week-03/zyroo-local-delivery/README.md` for demo accounts, the full
   delivery flow, and setup details
+
+## Week 4 — Delivery Tracking & Notifications
+
+- Project: `week-04/zyroo-local-delivery/` — carries the Week 3 app forward
+- Delivery tracking view (public Track page + order details): a simulated
+  route/map showing pickup, delivery, and the rider's position along the
+  route, driven by the order's status
+- Rider info card: name, avatar, phone, vehicle, and current delivery status
+- Simulated estimated delivery time alongside the tracking view
+- In-app notifications: a bell icon in the nav with an unread badge, scoped
+  per role, generated live as orders are created/assigned/accepted/picked
+  up/in transit/delivered/cancelled — seeded with a short realistic history
+- Business Orders page: Rider and Date-range filters added alongside the
+  existing Status filter and Order ID/customer/rider search
+- Same mock-data, no-backend, `localStorage`-persisted architecture as
+  Week 3 — see `week-04/zyroo-local-delivery/README.md` for details
