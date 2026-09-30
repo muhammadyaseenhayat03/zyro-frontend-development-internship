@@ -81,6 +81,38 @@ zyro-frontend-development-internship/
 │       ├── package-lock.json
 │       ├── vite.config.js
 │       └── README.md
+├── week-05/
+│   └── zyroo-local-delivery/     # React + Vite — API layer & real-time operations
+│       ├── src/
+│       │   ├── components/       # ConfirmDialog, DeliveryMap, DeliveryTimeline,
+│       │   │                     # EmptyState, Footer, Icon, Loader, Navbar,
+│       │   │                     # NotificationBell, PriorityBadge, ProtectedRoute,
+│       │   │                     # RiderInfoCard, Skeleton, Spinner, StatusBadge
+│       │   ├── config/           # env.js
+│       │   ├── context/          # AuthContext, NotificationsContext,
+│       │   │                     # OrdersContext, ToastContext
+│       │   ├── data/             # notifications, orders, users
+│       │   ├── hooks/            # useAsyncAction, useLoadingDelay, useMyNotifications
+│       │   ├── layouts/          # AppLayout
+│       │   ├── pages/            # auth (Login, Register),
+│       │   │                     # business (Dashboard, OrderForm, Orders),
+│       │   │                     # customer (CustomerOrders), rider (RiderDashboard),
+│       │   │                     # Home, NotFound, OrderDetails, Track
+│       │   ├── services/         # api.js, realtime.js
+│       │   ├── utils/            # datetime.js
+│       │   ├── App.jsx
+│       │   ├── main.jsx
+│       │   └── styles.css
+│       ├── public/
+│       ├── screenshots/          # submission screenshots
+│       ├── .env.example
+│       ├── .gitignore
+│       ├── .oxlintrc.json
+│       ├── index.html
+│       ├── package.json
+│       ├── package-lock.json
+│       ├── vite.config.js
+│       └── README.md
 ├── .gitignore
 └── README.md
 ```
@@ -141,3 +173,18 @@ git push -u origin main
   existing Status filter and Order ID/customer/rider search
 - Same mock-data, no-backend, `localStorage`-persisted architecture as
   Week 3 — see `week-04/zyroo-local-delivery/README.md` for details
+
+## Week 5 — Advanced Platform Integration & Real-Time Operations
+
+- Project: `week-05/zyroo-local-delivery/` — carries the Week 4 app forward
+- Central mock API service layer (`src/services/api.js`) with simulated
+  latency and failures, real loading/error/retry states, and optimistic UI
+- Simulated real-time delivery channel (`src/services/realtime.js`),
+  pagination, and stronger form validation
+- Create order and Edit order now include an **Assign rider** field: a rider
+  can be picked while creating the order (it starts as Assigned), and changed
+  later from Edit order or the order page — the order details update
+  immediately. The field locks once the delivery is accepted
+- Order form no longer triggers the browser's "Save vehicle / Google Wallet"
+  autofill prompt when validation fails
+- See `week-05/zyroo-local-delivery/README.md` for setup and details
